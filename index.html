@@ -129,40 +129,29 @@
 <h2 id="Docker-for-kernel-development"><a href="#Docker-for-kernel-development" class="headerlink" title="Docker for kernel development"></a>Docker for kernel development</h2><p>To compile Pine64 kernel, it requires cumbersome procedures like downloading cross-compiler, getting mailine kernel, ramdisk and so on.<br>Docker is a good choice to isolate your environment and accelerate building job.<br>Don’t spend your time to set up environment. :)</p>
 <h2 id="Install-a-Docker"><a href="#Install-a-Docker" class="headerlink" title="Install a Docker"></a>Install a Docker</h2><p>Please refer to the <a href="https://docs.docker.com/engine/installation/linux/ubuntulinux/" target="_blank" rel="external">installation page</a> if not installed.  </p>
 <h2 id="Create-a-container-for-building-Pine64-kernel"><a href="#Create-a-container-for-building-Pine64-kernel" class="headerlink" title="Create a container for building Pine64 kernel"></a>Create a container for building Pine64 kernel</h2><p>Please use this <a href="https://github.com/milokim/build-pine64/blob/master/Dockerfile" target="_blank" rel="external">Dockerfile</a>.<br>To create a container, type commands below.</p>
-<pre><code>$ wget https://raw.githubusercontent.com/milokim/build-pine64/master/Dockerfile
-$ docker build -t pine64-kernel .
-</code></pre><p>It will take some time about 10 ~ 15 min. Enjoy a cup of coffee.<br>Everything is done, you can get the container ID like below.</p>
-<pre><code>Successfully built d9f75cbe1006
-</code></pre><h2 id="Run-the-container"><a href="#Run-the-container" class="headerlink" title="Run the container"></a>Run the container</h2><pre><code>$ docker run -i -t d9f75cbe1006 /bin/bash
-</code></pre><p>Please replace ‘d9f75cbe1006’ with your container ID.  </p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ wget https://raw.githubusercontent.com/milokim/build-pine64/master/Dockerfile</span><br><span class="line">$ docker build -t pine64-kernel .</span><br></pre></td></tr></table></figure>
+<p>It will take some time about 10 ~ 15 min. Enjoy a cup of coffee.<br>Everything is done, you can get the container ID like below.</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Successfully built d9f75cbe1006</span><br></pre></td></tr></table></figure>
+<h2 id="Run-the-container"><a href="#Run-the-container" class="headerlink" title="Run the container"></a>Run the container</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ docker run -i -t d9f75cbe1006 /bin/bash</span><br></pre></td></tr></table></figure>
+<p>Please replace ‘d9f75cbe1006’ with your container ID.  </p>
 <p>I strongly recommend using your local directory inside the container. You can share files between host and the container.<br>Please run a Docker with the volume option, <em>‘-v’</em>.<br>For example,  </p>
-<pre><code>$ docker run -v /home/yourname/devel:/home/devel/ -i -t d9f75cbe1006 /bin/bash
-</code></pre><p>In this case, /home/devel/ is accessible only inside the container. Actual files exist in your local directory, /home/yourname/devel/.  </p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ docker run -v /home/yourname/devel:/home/devel/ -i -t d9f75cbe1006 /bin/bash</span><br></pre></td></tr></table></figure>
+<p>In this case, /home/devel/ is accessible only inside the container. Actual files exist in your local directory, /home/yourname/devel/.  </p>
 <p>Welcome! You are in the container.  </p>
-<pre><code>root@cac34d6b1857:/home/pine64/linux#
-</code></pre><h2 id="Build-the-kernel"><a href="#Build-the-kernel" class="headerlink" title="Build the kernel"></a>Build the kernel</h2><p>Just run the build script. This script was created while building a container by using the Dockerfile. </p>
-<pre><code>root@cac34d6b1857:/home/pine64/linux# ./build.sh
-</code></pre><p>If kernel is built successfully, ‘kernel.img’ is generated. It contains the kernel with initrd. This file will be updated into your microSD card.  </p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">root@cac34d6b1857:/home/pine64/linux<span class="comment">#</span></span><br></pre></td></tr></table></figure>
+<h2 id="Build-the-kernel"><a href="#Build-the-kernel" class="headerlink" title="Build the kernel"></a>Build the kernel</h2><p>Just run the build script. This script was created while building a container by using the Dockerfile. </p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">root@cac34d6b1857:/home/pine64/linux<span class="comment"># ./build.sh</span></span><br></pre></td></tr></table></figure>
+<p>If kernel is built successfully, ‘kernel.img’ is generated. It contains the kernel with initrd. This file will be updated into your microSD card.  </p>
 <h2 id="Update-new-kernel-and-DTB-onto-microSD-card"><a href="#Update-new-kernel-and-DTB-onto-microSD-card" class="headerlink" title="Update new kernel and DTB onto microSD card"></a>Update new kernel and DTB onto microSD card</h2><p>Copy kernel.img and dtb files from Docker container to your local directory. And exit from the container.  </p>
-<pre><code>root@cac34d6b1857:/home/pine64/linux# cp kernel.img /home/devel/
-root@cac34d6b1857:/home/pine64/linux# cp arch/arm64/boot/dts/allwinner/*.dtb /home/devel/
-root@cac34d6b1857:/home/pine64/linux# exit
-</code></pre><p>Now, you are back to real machine. To update a container’s changes, use docker commit command below. Please use your ID instead of ‘cac34d6b1857’.  </p>
-<pre><code>$ docker commit cac34d6b1857 pine64-kernel
-</code></pre><p>Insert SD card and use ‘dd’ command. Please replace ‘sdx’ with your environment by checking fdisk or dmesg.  </p>
-<pre><code>$ cd /home/yourname/devel/
-$ sudo dd if=kernel.img bs=1M of=/dev/sdx9
-$ sudo dd if=sun50i-a64-pine64.dtb bs=1M of=/dev/sdx seek=21
-</code></pre><p>Pine64 has separate disk partions in microSD, so kernel and DTB should be loaded in each location.<br>For Pine64+ board, please use sun50i-a64-pine64-plus.dtb instead of this dtb.</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">root@cac34d6b1857:/home/pine64/linux<span class="comment"># cp kernel.img /home/devel/</span></span><br><span class="line">root@cac34d6b1857:/home/pine64/linux<span class="comment"># cp arch/arm64/boot/dts/allwinner/*.dtb /home/devel/</span></span><br><span class="line">root@cac34d6b1857:/home/pine64/linux<span class="comment"># exit</span></span><br></pre></td></tr></table></figure>
+<p>Now, you are back to real machine. To update a container’s changes, use docker commit command below. Please use your ID instead of ‘cac34d6b1857’.  </p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ docker commit cac34d6b1857 pine64-kernel</span><br></pre></td></tr></table></figure>
+<p>Insert SD card and use ‘dd’ command. Please replace ‘sdx’ with your environment by checking fdisk or dmesg.  </p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ <span class="built_in">cd</span> /home/yourname/devel/</span><br><span class="line">$ sudo dd <span class="keyword">if</span>=kernel.img bs=1M of=/dev/sdx9</span><br><span class="line">$ sudo dd <span class="keyword">if</span>=sun50i<span class="_">-a</span>64-pine64.dtb bs=1M of=/dev/sdx seek=21</span><br></pre></td></tr></table></figure>
+<p>Pine64 has separate disk partions in microSD, so kernel and DTB should be loaded in each location.<br>For Pine64+ board, please use sun50i-a64-pine64-plus.dtb instead of this dtb.</p>
 <h2 id="Boot-your-own-kernel"><a href="#Boot-your-own-kernel" class="headerlink" title="Boot your own kernel"></a>Boot your own kernel</h2><p>To load new built kernel, please follow steps below in u-boot prompt.  </p>
-<pre><code>(U-boot prompt)
-sunxi# run load_env
-sunxi# run load_dtb
-sunxi# run set_cmdline
-sunxi# setenv kernel_part mainline
-sunxi# run load_kernel
-sunxi# run boot_kernel
-</code></pre><p>After kernel boots, you can skip Debian configurations and drop the system to shell prompt. </p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">(U-boot prompt)</span><br><span class="line">sunxi<span class="comment"># run load_env</span></span><br><span class="line">sunxi<span class="comment"># run load_dtb</span></span><br><span class="line">sunxi<span class="comment"># run set_cmdline</span></span><br><span class="line">sunxi<span class="comment"># setenv kernel_part mainline</span></span><br><span class="line">sunxi<span class="comment"># run load_kernel</span></span><br><span class="line">sunxi<span class="comment"># run boot_kernel</span></span><br></pre></td></tr></table></figure>
+<p>After kernel boots, you can skip Debian configurations and drop the system to shell prompt. </p>
 
 	
 	</div>
