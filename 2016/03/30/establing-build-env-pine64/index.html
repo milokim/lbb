@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>Pine64: Establing a Build Environment | LBB</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="Pine64 is a low-cost ARM64 SBC (Single Board Computer).This page desribes how to set up a build environment for Pine64 kernel development by using Docker.Many thanks to Andre Przywara who has been wor">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Pine64: Establing a Build Environment">
+<meta property="og:url" content="http://yoursite.com/2016/03/30/establing-build-env-pine64/index.html">
+<meta property="og:site_name" content="LBB">
+<meta property="og:description" content="Pine64 is a low-cost ARM64 SBC (Single Board Computer).This page desribes how to set up a build environment for Pine64 kernel development by using Docker.Many thanks to Andre Przywara who has been wor">
+<meta property="og:updated_time" content="2016-03-30T05:14:53.883Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Pine64: Establing a Build Environment">
+<meta name="twitter:description" content="Pine64 is a low-cost ARM64 SBC (Single Board Computer).This page desribes how to set up a build environment for Pine64 kernel development by using Docker.Many thanks to Andre Przywara who has been wor">
+  
+    <link rel="alternate" href="/atom.xml" title="LBB" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+  
+
+</head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">LBB</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">Linux Board Book</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" results="0" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://yoursite.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="default-establing-build-env-pine64" class="article article-type-default" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2016/03/30/establing-build-env-pine64/" class="article-date">
+  <time datetime="2016-03-30T05:14:53.883Z" itemprop="datePublished">2016-03-30</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Pine64: Establing a Build Environment
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p><a href="https://www.pine64.com/" target="_blank" rel="external">Pine64</a> is a low-cost ARM64 SBC (Single Board Computer).<br>This page desribes how to set up a build environment for Pine64 kernel development by using <a href="https://www.docker.com/" target="_blank" rel="external">Docker</a>.<br>Many thanks to Andre Przywara who has been working Pine64 mainline. Please refer to <a href="https://github.com/apritzel/pine64" target="_blank" rel="external">his page</a>.  </p>
+<h2 id="Focus-on-Linux-kernel-development"><a href="#Focus-on-Linux-kernel-development" class="headerlink" title="Focus on Linux kernel development"></a>Focus on Linux kernel development</h2><p>This page could be helpful if you are someone who</p>
+<ul>
+<li>Prefer mainline kernel to <a href="http://wiki.pine64.org/index.php/Pine_A64_Software_Release" target="_blank" rel="external">vendor BSP kernel</a></li>
+<li>Want to build and test your own kernel quickly</li>
+<li>Don’t care the rootfs, simple initrd gonna be OK</li>
+</ul>
+<h2 id="Flash-prebuilt-image-onto-microSD-card"><a href="#Flash-prebuilt-image-onto-microSD-card" class="headerlink" title="Flash prebuilt image onto microSD card"></a>Flash prebuilt image onto microSD card</h2><p>Prior to updating your own kernel image, please make the default microSD card image.<br>Please refer to ‘Quick start’ section in <a href="https://github.com/apritzel/pine64#quick-start" target="_blank" rel="external">this page</a>.  </p>
+<h2 id="Kernel-version"><a href="#Kernel-version" class="headerlink" title="Kernel version"></a>Kernel version</h2><p>Prebuilt microSD image is v4.4. And you will build v4.5-rc1.<br>Please note that Pine64 kernel mainline work is an initial step and on going. </p>
+<h2 id="Docker-for-kernel-development"><a href="#Docker-for-kernel-development" class="headerlink" title="Docker for kernel development"></a>Docker for kernel development</h2><p>To compile Pine64 kernel, it requires cumbersome procedures like downloading cross-compiler, getting mailine kernel, ramdisk and so on.<br>Docker is a good choice to isolate your environment and accelerate building job.<br>Don’t spend your time to set up environment. :)</p>
+<h2 id="Install-a-Docker"><a href="#Install-a-Docker" class="headerlink" title="Install a Docker"></a>Install a Docker</h2><p>Please refer to the <a href="https://docs.docker.com/engine/installation/linux/ubuntulinux/" target="_blank" rel="external">installation page</a> if not installed.  </p>
+<h2 id="Create-a-container-for-building-Pine64-kernel"><a href="#Create-a-container-for-building-Pine64-kernel" class="headerlink" title="Create a container for building Pine64 kernel"></a>Create a container for building Pine64 kernel</h2><p>Please use this <a href="https://github.com/milokim/build-pine64/blob/master/Dockerfile" target="_blank" rel="external">Dockerfile</a>.<br>To create a container, type commands below.</p>
+<pre><code>$ wget https://raw.githubusercontent.com/milokim/build-pine64/master/Dockerfile
+$ docker build -t pine64-kernel .
+</code></pre><p>It will take some time about 10 ~ 15 min. Enjoy a cup of coffee.<br>Everything is done, you can get the container ID like below.</p>
+<pre><code>Successfully built d9f75cbe1006
+</code></pre><h2 id="Run-the-container"><a href="#Run-the-container" class="headerlink" title="Run the container"></a>Run the container</h2><pre><code>$ docker run -i -t d9f75cbe1006 /bin/bash
+</code></pre><p>Please replace ‘d9f75cbe1006’ with your container ID.  </p>
+<p>I strongly recommend using your local directory inside the container. You can share files between host and the container.<br>Please run a Docker with the volume option, <em>‘-v’</em>.<br>For example,  </p>
+<pre><code>$ docker run -v /home/yourname/devel:/home/devel/ -i -t d9f75cbe1006 /bin/bash
+</code></pre><p>In this case, /home/devel/ is accessible only inside the container. Actual files exist in your local directory, /home/yourname/devel/.  </p>
+<p>Welcome! You are in the container.  </p>
+<pre><code>root@cac34d6b1857:/home/pine64/linux#
+</code></pre><h2 id="Build-the-kernel"><a href="#Build-the-kernel" class="headerlink" title="Build the kernel"></a>Build the kernel</h2><p>Just run the build script. This script was created while building a container by using the Dockerfile. </p>
+<pre><code>root@cac34d6b1857:/home/pine64/linux# ./build.sh
+</code></pre><p>If kernel is built successfully, ‘kernel.img’ is generated. It contains the kernel with initrd. This file will be updated into your microSD card.  </p>
+<h2 id="Update-new-kernel-and-DTB-onto-microSD-card"><a href="#Update-new-kernel-and-DTB-onto-microSD-card" class="headerlink" title="Update new kernel and DTB onto microSD card"></a>Update new kernel and DTB onto microSD card</h2><p>Copy kernel.img and dtb files from Docker container to your local directory. And exit from the container.  </p>
+<pre><code>root@cac34d6b1857:/home/pine64/linux# cp kernel.img /home/devel/
+root@cac34d6b1857:/home/pine64/linux# cp arch/arm64/boot/dts/allwinner/*.dtb /home/devel/
+root@cac34d6b1857:/home/pine64/linux# exit
+</code></pre><p>Now, you are back to real machine. To update a container’s changes, use docker commit command below. Please use your ID instead of ‘cac34d6b1857’.  </p>
+<pre><code>$ docker commit cac34d6b1857 pine64-kernel
+</code></pre><p>Insert SD card and use ‘dd’ command. Please replace ‘sdx’ with your environment by checking fdisk or dmesg.  </p>
+<pre><code>$ cd /home/yourname/devel/
+$ sudo dd if=kernel.img bs=1M of=/dev/sdx9
+$ sudo dd if=sun50i-a64-pine64.dtb bs=1M of=/dev/sdx seek=21
+</code></pre><p>Pine64 has separate disk partions in microSD, so kernel and DTB should be loaded in each location.<br>For Pine64+ board, please use sun50i-a64-pine64-plus.dtb instead of this dtb.</p>
+<h2 id="Boot-your-own-kernel"><a href="#Boot-your-own-kernel" class="headerlink" title="Boot your own kernel"></a>Boot your own kernel</h2><p>To load new built kernel, please follow steps below in u-boot prompt.  </p>
+<pre><code>(U-boot prompt)
+sunxi# run load_env
+sunxi# run load_dtb
+sunxi# run set_cmdline
+sunxi# setenv kernel_part mainline
+sunxi# run load_kernel
+sunxi# run boot_kernel
+</code></pre><p>After kernel boots, you can skip Debian configurations and drop the system to shell prompt. </p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2016/03/30/establing-build-env-pine64/" data-id="cimeeeqmn0001l4nn2h7na8h9" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+  
+    <a href="/2016/03/30/hello-world/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">Hello World</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+  
+    
+
+  
+    
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/03/">March 2016</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2016/03/30/establing-build-env-pine64/">Pine64: Establing a Build Environment</a>
+          </li>
+        
+          <li>
+            <a href="/2016/03/30/hello-world/">Hello World</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2016 Milo Kim<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+  </div>
+</body>
+</html>
