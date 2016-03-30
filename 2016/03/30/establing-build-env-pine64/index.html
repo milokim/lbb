@@ -1,4 +1,111 @@
-<!DOCTYPE html><html lang="null"><head><meta http-equiv="content-type" content="text/html; charset=utf-8"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"><meta content="yes" name="apple-mobile-web-app-capable"><meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"><meta content="telephone=no" name="format-detection"><meta name="description"><title>Pine64: Establing a Build Environment | LBB</title><link rel="stylesheet" type="text/css" href="/lbb/css/style.css?v=0.0.0"><link rel="stylesheet" type="text/css" href="//cdn.bootcss.com/normalize/3.0.3/normalize.min.css"><link rel="stylesheet" type="text/css" href="//cdn.bootcss.com/pure/0.6.0/pure-min.css"><link rel="stylesheet" type="text/css" href="//cdn.bootcss.com/pure/0.6.0/grids-responsive-min.css"><link rel="stylesheet" href="//cdn.bootcss.com/font-awesome/4.5.0/css/font-awesome.min.css"><script type="text/javascript" src="//cdn.bootcss.com/jquery/2.2.1/jquery.min.js"></script><link rel="Shortcut Icon" type="image/x-icon" href="/lbb/favicon.ico"><link rel="apple-touch-icon" href="/lbb/apple-touch-icon.png"><link rel="apple-touch-icon-precomposed" href="/lbb/apple-touch-icon.png"></head><body><div class="body_container"><div id="header"><div class="site-name"><h1 class="hidden">Pine64: Establing a Build Environment</h1><a id="logo" href="/lbb/.">LBB</a><p class="description">Linux Board Book</p></div><div id="nav-menu"><a href="/lbb/." class="current"><i class="fa fa-home"> Home</i></a><a href="/lbb/archives/"><i class="fa fa-archive"> Archive</i></a><a href="/lbb/about/"><i class="fa fa-user"> About</i></a><a href="/lbb/atom.xml"><i class="fa fa-rss"> RSS</i></a></div></div><div id="layout" class="pure-g"><div class="pure-u-1 pure-u-md-3-4"><div class="content_container"><div class="post"><h1 class="post-title">Pine64: Establing a Build Environment</h1><div class="post-meta">Mar 30, 2016<script src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js" async></script><span id="busuanzi_container_page_pv"> | <span id="busuanzi_value_page_pv"></span><span> Hits</span></span></div><div class="post-content"><p><a href="https://www.pine64.com/" target="_blank" rel="external">Pine64</a> is a low-cost ARM64 SBC (Single Board Computer).<br>This page desribes how to set up a build environment for Pine64 kernel development by using <a href="https://www.docker.com/" target="_blank" rel="external">Docker</a>.<br>Many thanks to Andre Przywara who has been working Pine64 mainline. Please refer to <a href="https://github.com/apritzel/pine64" target="_blank" rel="external">his page</a>.  </p>
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>Pine64: Establing a Build Environment | LBB</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="Pine64 is a low-cost ARM64 SBC (Single Board Computer).This page desribes how to set up a build environment for Pine64 kernel development by using Docker.Many thanks to Andre Przywara who has been wor">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Pine64: Establing a Build Environment">
+<meta property="og:url" content="http://milokim.github.io/2016/03/30/establing-build-env-pine64/index.html">
+<meta property="og:site_name" content="LBB">
+<meta property="og:description" content="Pine64 is a low-cost ARM64 SBC (Single Board Computer).This page desribes how to set up a build environment for Pine64 kernel development by using Docker.Many thanks to Andre Przywara who has been wor">
+<meta property="og:updated_time" content="2016-03-30T05:14:53.883Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Pine64: Establing a Build Environment">
+<meta name="twitter:description" content="Pine64 is a low-cost ARM64 SBC (Single Board Computer).This page desribes how to set up a build environment for Pine64 kernel development by using Docker.Many thanks to Andre Przywara who has been wor">
+  
+    <link rel="alternate" href="/atom.xml" title="LBB" type="application/atom+xml">
+  
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css" integrity="sha384-XdYbMnZ/QjLh6iI4ogqCTaIjrFk87ip+ekIjefZch0Y+PvJ8CDYtEs1ipDmPorQ+" crossorigin="anonymous">
+
+  <link rel="stylesheet" href="/lbb/css/styles.css">
+  
+
+</head>
+
+<body>
+  <nav class="navbar navbar-inverse">
+  <div class="container">
+    <!-- Brand and toggle get grouped for better mobile display -->
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#main-menu-navbar" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      
+    </div>
+
+    <!-- Collect the nav links, forms, and other content for toggling -->
+    <div class="collapse navbar-collapse" id="main-menu-navbar">
+      <ul class="nav navbar-nav">
+        
+          <li><a class=""
+                 href="/lbb/index.html">Home</a></li>
+        
+          <li><a class=""
+                 href="/lbb/archives/">Archives</a></li>
+        
+      </ul>
+
+      <!--
+      <ul class="nav navbar-nav navbar-right">
+        
+          <li><a href="/atom.xml" title="RSS Feed"><i class="fa fa-rss"></i></a></li>
+        
+      </ul>
+      -->
+    </div><!-- /.navbar-collapse -->
+  </div><!-- /.container-fluid -->
+</nav>
+
+  <div class="container">
+    <div class="blog-header">
+  <h1 class="blog-title">LBB</h1>
+  
+    <p class="lead blog-description">Linux Board Book</p>
+  
+</div>
+
+    <div class="row">
+        <div class="col-sm-8 blog-main">
+          <article id="default-establing-build-env-pine64" class="article article-type-default" itemscope itemprop="blogPost">
+
+  <header class="article-header">
+    
+  
+    <h1 class="article-title" itemprop="name">
+      Pine64: Establing a Build Environment
+    </h1>
+  
+
+
+  </header>
+
+  <div class="article-meta">
+    <div class="article-datetime">
+  <a href="/lbb/2016/03/30/establing-build-env-pine64/" class="article-date"><time datetime="2016-03-30T05:14:53.883Z" itemprop="datePublished">2016-03-30</time></a>
+</div>
+
+    
+    
+
+  </div>
+  <div class="article-inner">
+
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p><a href="https://www.pine64.com/" target="_blank" rel="external">Pine64</a> is a low-cost ARM64 SBC (Single Board Computer).<br>This page desribes how to set up a build environment for Pine64 kernel development by using <a href="https://www.docker.com/" target="_blank" rel="external">Docker</a>.<br>Many thanks to Andre Przywara who has been working Pine64 mainline. Please refer to <a href="https://github.com/apritzel/pine64" target="_blank" rel="external">his page</a>.  </p>
 <h2 id="Focus-on-Linux-kernel-development"><a href="#Focus-on-Linux-kernel-development" class="headerlink" title="Focus on Linux kernel development"></a>Focus on Linux kernel development</h2><p>This page could be helpful if you are someone who</p>
 <ul>
 <li>Prefer mainline kernel to <a href="http://wiki.pine64.org/index.php/Pine_A64_Software_Release" target="_blank" rel="external">vendor BSP kernel</a></li>
@@ -44,4 +151,110 @@ sunxi# setenv kernel_part mainline
 sunxi# run load_kernel
 sunxi# run boot_kernel
 </code></pre><p>After kernel boots, you can skip Debian configurations and drop the system to shell prompt. </p>
-</div><script type="text/javascript" src="/lbb/js/share.js?v=0.0.0" async></script><a data-url="http://milokim.github.io/lbb/2016/03/30/establing-build-env-pine64/" data-id="cimef5vm200015wnn4xm30m4w" class="article-share-link">Share</a><div class="tags"></div><div class="post-nav"><a href="/lbb/2016/03/30/hello-world/" class="next">Hello World</a></div></div></div></div><div class="pure-u-1-4"><div id="sidebar"><div class="widget"><form action="//www.google.com/search" method="get" accept-charset="utf-8" target="_blank" class="search-form"><input type="text" name="q" maxlength="20" placeholder="Search"/><input type="hidden" name="sitesearch" value="http://milokim.github.io"/></form></div><div class="widget"><div class="widget-title"><i class="fa fa-folder-o"> Categories</i></div></div><div class="widget"><div class="widget-title"><i class="fa fa-star-o"> Tags</i></div><div class="tagcloud"></div></div><div class="widget"><div class="widget-title"><i class="fa fa-file-o"> Recent</i></div><ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/lbb/2016/03/30/establing-build-env-pine64/">Pine64: Establing a Build Environment</a></li><li class="post-list-item"><a class="post-list-link" href="/lbb/2016/03/30/hello-world/">Hello World</a></li></ul></div><div class="widget"><div class="widget-title"><i class="fa fa-external-link"> Blogroll</i></div><ul></ul><a href="http://www.example1.com/" title="site-name1" target="_blank">site-name1</a><ul></ul><a href="http://www.example2.com/" title="site-name2" target="_blank">site-name2</a><ul></ul><a href="http://www.example3.com/" title="site-name3" target="_blank">site-name3</a></div></div></div><div class="pure-u-1 pure-u-md-3-4"><div id="footer">© <a href="/lbb/." rel="nofollow">LBB.</a> Powered by<a rel="nofollow" target="_blank" href="https://hexo.io"> Hexo.</a><a rel="nofollow" target="_blank" href="https://github.com/tufu9441/maupassant-hexo"> Theme</a> by<a rel="nofollow" target="_blank" href="https://github.com/pagecho"> Cho.</a></div></div></div><a id="rocket" href="#top" class="show"></a><script type="text/javascript" src="/lbb/js/totop.js?v=0.0.0" async></script><script type="text/javascript" src="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.pack.js" async></script><script type="text/javascript" src="/lbb/js/fancybox.js?v=0.0.0" async></script><link rel="stylesheet" type="text/css" href="/lbb/css/jquery.fancybox.css?v=0.0.0"><script type="text/javascript" src="/lbb/js/codeblock-resizer.js?v=0.0.0"></script><script type="text/javascript" src="/lbb/js/smartresize.js?v=0.0.0"></script></div></body></html>
+
+      
+    </div>
+
+    
+      
+
+    
+
+    <footer class="article-footer">
+      <a data-url="http://milokim.github.io/lbb/2016/03/30/establing-build-env-pine64/" data-id="cimefb7oy000091nns4oihkjd" class="article-share-link">
+        <i class="fa fa-share"></i> Share
+      </a>
+      
+      
+
+    </footer>
+  </div>
+  
+    
+<ul id="article-nav" class="nav nav-pills nav-justified">
+  
+  <li role="presentation">
+    <a href="/lbb/2016/03/30/hello-world/" id="article-nav-older" class="article-nav-link-wrap">
+      <i class="fa fa-chevron-left pull-left"></i>
+      <span class="article-nav-link-title">Hello World</span>
+    </a>
+  </li>
+  
+  
+</ul>
+
+
+  
+</article>
+
+
+
+
+        </div>
+        <div class="col-sm-3 col-sm-offset-1 blog-sidebar">
+          
+  <div class="sidebar-module sidebar-module-inset">
+  <h4>About</h4>
+  <p>Etiam porta <em>sem malesuada magna</em> mollis euismod. Cras mattis consectetur purus sit amet fermentum. Aenean lacinia bibendum nulla sed consectetur.</p>
+
+</div>
+
+
+  
+
+
+  
+
+
+  
+
+  
+  <div class="sidebar-module">
+    <h4>Archives</h4>
+    <ul class="sidebar-module-list"><li class="sidebar-module-list-item"><a class="sidebar-module-list-link" href="/lbb/archives/2016/03/">March 2016</a><span class="sidebar-module-list-count">2</span></li></ul>
+  </div>
+
+
+
+  
+  <div class="sidebar-module">
+    <h4>Recents</h4>
+    <ul class="sidebar-module-list">
+      
+        <li>
+          <a href="/lbb/2016/03/30/establing-build-env-pine64/">Pine64: Establing a Build Environment</a>
+        </li>
+      
+        <li>
+          <a href="/lbb/2016/03/30/hello-world/">Hello World</a>
+        </li>
+      
+    </ul>
+  </div>
+
+
+
+        </div>
+    </div>
+  </div>
+  <footer class="blog-footer">
+  <div class="container">
+    <div id="footer-info" class="inner">
+      &copy; 2016 Milo Kim<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+
+  
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js" integrity="sha384-8gBf6Y4YYq7Jx97PIqmTwLPin4hxIzQw5aDmUg/DDhul9fFpbbLcLh3nTIIDJKhx" crossorigin="anonymous"></script>
+
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
+
+
+
+<script src="/lbb/js/script.js"></script>
+
+</body>
+</html>
